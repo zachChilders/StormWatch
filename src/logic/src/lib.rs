@@ -1,5 +1,5 @@
-use std::{collections::HashMap, fmt::Display};
 use chrono::{Datelike, Duration, Timelike, Utc};
+use std::{collections::HashMap, fmt::Display};
 
 use std::fmt::Write;
 
@@ -26,10 +26,9 @@ struct SnowFall {
 
 impl Display for SnowFall {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-
         let now = Utc::now();
 
-        let mut res = String::from("[\n\t\t"); 
+        let mut res = String::from("[\n\t\t");
         for (hour_offset, snowfall) in &self.hourly {
             if res != String::from("[\n\t\t") {
                 write!(&mut res, "\n\t\t")?;
@@ -128,7 +127,7 @@ mod test {
 
         let reno = client.get_snowfall(String::from("Reno")).unwrap();
         println!("{}", reno);
-        
+
         let slt = client.get_snowfall(String::from("South Lake")).unwrap();
         println!("{}", slt);
     }
