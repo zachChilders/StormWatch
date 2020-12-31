@@ -18,6 +18,12 @@ struct Endpoints {
     one_call: String,
 }
 
+struct Temperature {
+    location: String,
+    degrees: u64,
+    feels_like: u64,
+}
+
 struct SnowFall {
     location: String,
     total: f64,
