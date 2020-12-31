@@ -1073,6 +1073,14 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7e7811dd7f9398f14cc76efd356f98f03aa30419dea46aa810d71e819fc97158"
 
 [[package]]
+name = "weather_protocol"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "weatherstation"
 version = "0.1.0"
 dependencies = [
@@ -1080,6 +1088,7 @@ dependencies = [
  "reqwest",
  "serde",
  "serde_json",
+ "weather_protocol",
 ]
 
 [[package]]

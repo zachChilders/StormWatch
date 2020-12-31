@@ -1,0 +1,18 @@
+[package]
+name = "weather_protocol"
+version = "0.1.0"
+authors = ["zachChilders <zach@childers.dev>"]
+edition = "2018"
+
+
+[lib]
+name = "weather_protocol"
+path = "src/lib.rs"
+crate-type = ["rlib"]
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+serde = {version="1.0.118", features = ["derive"]}
+serde_json = "1.0"
