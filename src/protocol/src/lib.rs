@@ -1,7 +1,7 @@
 use std::fmt::Display;
 use std::fmt::Write;
 
-use chrono::{Datelike, Duration, Timelike, Utc};
+use chrono::{Duration, Utc};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize)]

@@ -1,9 +1,8 @@
 use std::sync::Arc;
 
-use warp::{reply::Response, Filter};
+use warp::Filter;
 
-use weather::{OpenWeatherClient};
-use weather_protocol::*;
+use weather::OpenWeatherClient;
 
 struct Context {
     weather_client: OpenWeatherClient,
@@ -20,7 +19,7 @@ impl Context {
 async fn weather(
     param: String,
     station_context: Arc<Context>,
-) -> Result<impl warp::Reply , warp::Rejection> {
+) -> Result<impl warp::Reply, warp::Rejection> {
     let snowfall = station_context
         .clone()
         .weather_client
