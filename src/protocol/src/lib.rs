@@ -1,5 +1,4 @@
-
-use serde::{Deserialize};
+use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
 pub struct WeatherResponse {
@@ -32,7 +31,7 @@ pub struct Hourly {
 #[derive(Debug, Deserialize)]
 pub struct Snow {
     #[serde(rename(deserialize = "1h"))]
-   pub hour: f64,
+    pub hour: f64,
 }
 #[derive(Debug, Deserialize)]
 pub struct Rain {

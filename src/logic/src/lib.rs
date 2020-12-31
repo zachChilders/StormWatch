@@ -5,8 +5,8 @@ use weather_protocol::*;
 type Coords = (f64, f64, &'static str);
 
 const MAMMOTH: Coords = (37.6482765, -118.9832411, "Mammoth");
-const RENO: Coords = (39.5197729,-119.9283731, "Reno");
-const SLT: Coords = (38.9227921,-120.013534, "South Lake");
+const RENO: Coords = (39.5197729, -119.9283731, "Reno");
+const SLT: Coords = (38.9227921, -120.013534, "South Lake");
 
 fn get_weather(coordinates: Coords) -> Result<()> {
     let key = "115310efdc47011d9ab0ca9a2ea1fb23";
@@ -46,7 +46,7 @@ fn get_weather(coordinates: Coords) -> Result<()> {
 
 mod test {
     use super::*;
-    
+
     #[test]
     fn weather() {
         get_weather(MAMMOTH).unwrap();
