@@ -1,4 +1,8 @@
-use serde::Deserialize;
+use std::fmt::Display;
+use std::fmt::Write;
+
+use chrono::{Datelike, Duration, Timelike, Utc};
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize)]
 pub struct WeatherResponse {
@@ -45,3 +49,53 @@ pub struct Weather {
     description: String,
     icon: String,
 }
+
+#[derive(Debug, Serialize)]
+pub struct SnowFall {
+    location: String,
+    total: f64,
+    hourly: Vec<Accumulation>,
+}
+
+impl SnowFall {
+    pub fn new(location: String, total: f64, hourly: Vec<Accumulation>) -> Self {
+        Self {
+            location,
+            total,
+            hourly,
+        }
+    }
+}
+
+impl Display for SnowFall {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let now = Utc::now();
+
+        let mut res = String::from("[\n\t\t");
+        for (hour_offset, snowfall) in &self.hourly {
+            if res != String::from("[\n\t\t") {
+                write!(&mut res, "\n\t\t")?;
+            }
+            let offset = Duration::hours(hour_offset.clone() as i64);
+            let future_date = now + offset;
+            write!(&mut res, "{} {}mm", future_date.to_rfc2822(), snowfall)?;
+        }
+        write!(&mut res, "\n\t]")?;
+
+        if res == String::from("[\n\t\t\n\t]") {
+            res = String::from("None");
+        }
+
+        write!(
+            f,
+            r#"
+        Total Snowfall for {}: {} inches
+        Hourly Snowfall for {}: {}
+        "#,
+            self.location, self.total, self.location, res
+        )
+    }
+}
+
+pub type Coords = (f64, f64); // Longitude, Latitude
+pub type Accumulation = (u32, f64); // Hourly Offset, Volume

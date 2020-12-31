@@ -1,6 +1,7 @@
 [workspace]
 
 members = [
-    "src/logic",
+    "src/weather",
     "src/protocol",
+    "src/host",
 ]

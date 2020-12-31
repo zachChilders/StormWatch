@@ -1,4 +1,3 @@
-use chrono::{Datelike, Duration, Timelike, Utc};
 use std::{collections::HashMap, fmt::Display};
 
 use std::fmt::Write;
@@ -6,9 +5,6 @@ use std::fmt::Write;
 use eyre::Result;
 
 use weather_protocol::*;
-
-type Coords = (f64, f64); // Longitude, Latitude
-type Accumulation = (u32, f64); // Hourly Offset, Volume
 
 const MAMMOTH: Coords = (37.6482765, -118.9832411);
 const RENO: Coords = (39.5197729, -119.9283731);
@@ -24,42 +20,6 @@ struct Temperature {
     feels_like: u64,
 }
 
-struct SnowFall {
-    location: String,
-    total: f64,
-    hourly: Vec<Accumulation>,
-}
-
-impl Display for SnowFall {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let now = Utc::now();
-
-        let mut res = String::from("[\n\t\t");
-        for (hour_offset, snowfall) in &self.hourly {
-            if res != String::from("[\n\t\t") {
-                write!(&mut res, "\n\t\t")?;
-            }
-            let offset = Duration::hours(hour_offset.clone() as i64);
-            let future_date = now + offset;
-            write!(&mut res, "{} {}mm", future_date.to_rfc2822(), snowfall)?;
-        }
-        write!(&mut res, "\n\t]")?;
-
-        if res == String::from("[\n\t\t\n\t]") {
-            res = String::from("None");
-        }
-
-        write!(
-            f,
-            r#"
-        Total Snowfall for {}: {} inches
-        Hourly Snowfall for {}: {}
-        "#,
-            self.location, self.total, self.location, res
-        )
-    }
-}
-
 impl Endpoints {
     fn new() -> Self {
         Self {
@@ -68,14 +28,14 @@ impl Endpoints {
     }
 }
 
-struct OpenWeatherClient {
+pub struct OpenWeatherClient {
     locations: HashMap<String, Coords>,
     api_key: String,
     endpoints: Endpoints,
 }
 
 impl OpenWeatherClient {
-    fn new() -> Self {
+    pub fn new() -> Self {
         let api_key = String::from("115310efdc47011d9ab0ca9a2ea1fb23");
 
         let mut locations = HashMap::<String, Coords>::new();
@@ -91,7 +51,7 @@ impl OpenWeatherClient {
         }
     }
 
-    fn get_snowfall(&self, location: String) -> Result<SnowFall> {
+    pub async fn get_snowfall(&self, location: String) -> Result<SnowFall> {
         let coordinates = self.locations[&location];
         let api_uri = format!(
         "https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={long}&exclude=minutely,current,daily&appid={key}&units=imperial",
@@ -100,7 +60,7 @@ impl OpenWeatherClient {
         key = self.api_key
     );
 
-        let body = reqwest::blocking::get(&api_uri)?.text()?;
+        let body = reqwest::get(&api_uri).await?.text().await?;
         let response: WeatherResponse = serde_json::from_str(&body)?;
 
         let hourly = response.hourly;
@@ -115,26 +75,25 @@ impl OpenWeatherClient {
             }
         }
 
-        Ok(SnowFall {
-            location,
-            hourly: hourly_snowfall,
-            total: total_snowfall,
-        })
+        Ok(SnowFall::new(location, total_snowfall, hourly_snowfall ))
     }
 }
 mod test {
     use super::*;
 
-    #[test]
-    fn weather() {
+    #[tokio::test]
+    async fn snowfall() {
         let client = OpenWeatherClient::new();
-        let mammoth = client.get_snowfall(String::from("Mammoth")).unwrap();
+        let mammoth = client.get_snowfall(String::from("Mammoth")).await.unwrap();
         println!("{}", mammoth);
 
-        let reno = client.get_snowfall(String::from("Reno")).unwrap();
+        let reno = client.get_snowfall(String::from("Reno")).await.unwrap();
         println!("{}", reno);
 
-        let slt = client.get_snowfall(String::from("South Lake")).unwrap();
+        let slt = client
+            .get_snowfall(String::from("South Lake"))
+            .await
+            .unwrap();
         println!("{}", slt);
     }
 }

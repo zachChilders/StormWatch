@@ -1,20 +1,20 @@
 [package]
-name = "weatherstation"
+name = "weather"
 version = "0.1.0"
 authors = ["zachChilders <zach@childers.dev>"]
 edition = "2018"
 
 [lib]
-name = "weatherstation"
+name = "weather"
 path = "src/lib.rs"
 crate-type = ["rlib"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-chrono = "0.4.19"
 eyre = "0.6.3"
 reqwest = {version= "0.10.10", features = ["blocking"]}
 
+tokio = {version = "1.0.1", features=["full"]}
 serde = {version="1.0.118", features = ["derive"]}
 serde_json = "1.0"
 
