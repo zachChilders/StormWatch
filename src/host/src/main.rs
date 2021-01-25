@@ -32,11 +32,15 @@ async fn weather(
 
 #[tokio::main]
 async fn main() {
+    let cors = warp::cors()
+    .allow_any_origin();
+
     let station_context = Arc::new(Context::new());
 
     let weather = warp::path("weather")
         .and(warp::path::param())
-        .and_then(move |param| weather(param, station_context.clone()));
+        .and_then(move |param| weather(param, station_context.clone()))
+        .with(cors);
 
     warp::serve(weather).run(([0, 0, 0, 0], 3030)).await;
 }
