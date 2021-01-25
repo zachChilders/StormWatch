@@ -42,5 +42,5 @@ async fn main() {
         .and_then(move |param| weather(param, station_context.clone()))
         .with(cors);
 
-    warp::serve(weather).run(([0, 0, 0, 0], 3030)).await;
+    warp::serve(weather).run(([0, 0, 0, 0], 80)).await;
 }

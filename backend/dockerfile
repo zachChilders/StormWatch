@@ -6,4 +6,4 @@ EXPOSE 3030
 
 RUN cargo build
 
-CMD ["cargo run"]
+RUN cp ./target/debug/weatherstation ./
